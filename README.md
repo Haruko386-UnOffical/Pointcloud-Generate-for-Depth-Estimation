@@ -1,4 +1,4 @@
-# Pointcloud Generate for Depth Esetimation
+# Pointcloud Generate for Depth Estimation
 
 Pointcloud Generate for Depth Esetimation is a browser-based tool for reconstructing a precise 3D point cloud from an original image and its corresponding grayscale depth map. It is built with Vue 3, Three.js, and WebGL.
 
