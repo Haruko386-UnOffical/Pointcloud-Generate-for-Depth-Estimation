@@ -1,8 +1,6 @@
-# 🌌 3D Pixel Particle Reconstruction (Vue 3 + Three.js)
+# Pointcloud Generate for Depth Esetimation
 
-[English](./README_EN.md) | [中文](./README.md)
-
-一个基于 **Vue 3** 和 **Three.js** 的高性能 WebGL 粒子特效实验项目。该项目能够将普通的 RGB 图像转化为数万个 3D 粒子，并支持通过 **深度图 (Depth Map)** 重构 2.5D/3D 浮雕模型，以此模拟点云扫描效果。
+Pointcloud Generate for Depth Esetimation is a browser-based tool for reconstructing a precise 3D point cloud from an original image and its corresponding grayscale depth map. It is built with Vue 3, Three.js, and WebGL.
 
 <table>
   <tr>
@@ -23,113 +21,101 @@
   </tr>
 </table>
 
-----
+## Features
 
-<table>
-  <tr>
-    <td style="vertical-align: middle;"
-      <a><img src="./public/nemupan.jpg" width="36"></a>
-    </td>
-    <td style="vertical-align: middle;">
-      <b>示例图作者：</b>
-      <a href="https://www.nemupan.com" target="_blank" style="color:#f2a3b3">
-        nemupan
-      </a>
-    </td>
-    <td style="vertical-align: middle;"
-      <a><img src="https://avatars.githubusercontent.com/u/140301008?v=4" width="36"></a>
-    </td>
-    <td style="vertical-align: middle;">
-      <b>深度估计模型：</b>
-      <a href="https://github.com/Haruko386/ApDepth" target="_blank" style="color:#f2a3b3">
-        ApDepth
-      </a>
-    </td>
-    </tr>
-</table>
+- Uses one point for every source-image pixel, up to the six-million-point safety limit.
+- Samples color and depth at the exact center of each pixel.
+- Accepts an RGB or RGBA original image and a grayscale depth map.
+- Aligns a differently sized depth map to the original image dimensions and reports when resampling occurs.
+- Provides real-time orbit, pan, zoom, depth-strength, point-size, and depth-inversion controls.
+- Uses a draggable floating control dot that opens or collapses the rounded monochrome control panel.
+- Exports the current preview camera view as a PNG by default.
+- Exports the reconstructed point cloud as a binary little-endian PLY file when selected.
 
-## ✨ 核心特点
+## How Reconstruction Works
 
-* **🧊 深度重构 (Depth Reconstruction)**：支持上传单通道深度图（Depth Map），基于其灰度值将 2D 图像实时转化为 3D 点云模型。
-* **🎞️ GIF 动图支持**：内置 GIF 解析器，支持上传 GIF 动图，粒子会随每一帧动画实时更新颜色。
+Each pixel in the original image becomes one 3D point:
 
+- The pixel column and row define the point's X and Y coordinates.
+- The grayscale depth value defines its Z coordinate.
+- The matching original-image pixel defines its RGB color.
 
-## 🛠️ 项目环境
+The default convention is black for far and white for near. Use **Invert Depth** when a depth map uses the opposite convention.
 
-* **Frontend Framework**: Vue 3 (Composition API)
-* **3D Engine**: Three.js
-* **Build Tool**: Vite
-* **Shader Language**: GLSL (Vertex & Fragment Shaders)
-* **Utils**: gifuct-js (GIF parsing)
+For the most accurate result, use an original image and a depth map with identical dimensions. If their dimensions differ, the app resamples the depth map to match the original image before reconstruction.
 
-## 🚀 环境配置
+## Requirements
 
-### 1. 环境要求
+- Node.js 20.19 or later, or Node.js 22.12 or later
+- npm
+- A browser with WebGL support
 
-* Node.js > 22.0
-* npm 或 yarn
-
-### 2. 安装依赖
+## Installation
 
 ```bash
-git clone https://github.com/Haruko386-UnOffical/3D_Pixel_Particle_Reconstruction.git
-cd 3D_Pixel_Particle_Reconstruction
+git clone https://github.com/Haruko386-UnOffical/Pointcloud-Generate-for-Depth-Esetimation.git
+cd Pointcloud-Generate-for-Depth-Esetimation
 npm install
-```
-
-### 3. 启动开发服务器
-
-```bash
 npm run dev
 ```
 
-访问 `http://localhost:5173`即可
+Open `http://localhost:5173` in a browser.
 
---------
+## Usage
 
-## 📖 使用指南
+1. Select the original RGB or RGBA image.
+2. Select the corresponding grayscale depth map.
+3. Drag the floating dot to place the controls anywhere on screen, or click it to open and collapse the panel.
+4. Drag the point cloud to rotate, right-drag to pan, and scroll to zoom.
+5. Adjust **Depth**, **Point Size**, or **Invert Depth** as needed.
+6. Keep **Current view (PNG)** selected and click **Export** to save exactly the view currently shown in the preview.
+7. Select **Point cloud (PLY)** before clicking **Export** if you need the reusable 3D point data instead.
 
-### 基础操作
+## Export Formats
 
-1. **上传图片**：点击 **`UPLOAD IMAGE`**，选择一张图片。
-2. **视角控制**：
-    * **左键拖拽**：旋转模型。
-    * **右键拖拽**：平移视角。
-    * **滚轮滚动**：缩放视图。
+### PNG
 
+The default export captures the active WebGL canvas, including the current camera angle, pan, zoom, point size, depth strength, and depth direction.
 
+### PLY
 
-### 3D 深度模式
+The PLY export contains one vertex for each reconstructed point, with float X/Y/Z coordinates and 8-bit RGB color values. It uses the binary little-endian PLY format for smaller files and faster export.
 
-要使用“深度点云”效果，你需要：一张原图，一张对应的深度图。
+## Scripts
 
-1. 先上传 **RGB 原图**。
-2. 点击 **`UPLOAD DEPTH`** 按钮上传深度图（必须是单通道深度图）。
-
-3. 上传成功后，UI 会显示 `3D MODE`，粒子将自动根据深度渲染在指定位置。
-
-## 🧩 项目结构
-
+```bash
+npm run dev        # Start the development server
+npm run build      # Type-check and build for production
+npm run preview    # Preview the production build
+npm run test:e2e   # Run Playwright end-to-end tests
 ```
+
+## Project Structure
+
+```text
 src/
-├── assets/             # 静态资源 (默认演示图)
-├── components/
-│   ├── PixelImage.vue  # [核心] 主场景组件 (Three.js 逻辑, Shader, UI)
-│   └── PresetSelector.vue # 预设图片选择器组件
-├── utils/
-│   └── gifLoader.js    # GIF 解析与帧处理工具
-├── App.vue             # 根组件
-└── main.js             # 入口文件
-
+  assets/                    Default example images and global styles
+  components/
+    PixelImage.vue           Three.js scene, reconstruction, controls, and export
+  App.vue                    Root component
+  main.ts                    Application entry point
+e2e/
+  vue.spec.ts                Browser smoke test
 ```
 
-## 🤝 贡献与反馈
+## Technical Notes
 
-如果你有更好的 Shader 算法或优化建议，欢迎提交 `Issue` 或 `PR` ！
+- The original image resolution determines point-cloud resolution.
+- Images larger than 6,000,000 pixels are rejected to prevent the browser from exhausting GPU or system memory. The image is not silently downscaled.
+- Depth values are normalized from 8-bit grayscale values to the range 0 through 1.
+- Transparent original-image pixels are discarded in the WebGL preview. PLY still contains a point for every source pixel.
+- The exported PNG resolution matches the preview canvas resolution, including the browser device-pixel ratio up to 2.
 
-## 📄 License
+## Credits
 
-> [!CAUTION]
->
-> 本项目基于 MIT License © 2026 Dimon0000000
+- Example image: [nemupan](https://www.nemupan.com)
+- Depth estimation model: [ApDepth](https://github.com/Haruko386/ApDepth)
 
+## License
+
+This project is available under the MIT License. Copyright 2026 Dimon0000000.
