@@ -1,5 +1,5 @@
 {
-  "name": "pixel-particles",
+  "name": "pointcloud-generate-for-depth-esetimation",
   "version": "0.0.0",
   "private": true,
   "type": "module",
@@ -12,7 +12,6 @@
     "type-check": "vue-tsc --build"
   },
   "dependencies": {
-    "gifuct-js": "^2.1.2",
     "three": "^0.182.0",
     "vue": "^3.5.27"
   },

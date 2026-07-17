@@ -7,6 +7,10 @@ import PixelImage from './components/PixelImage.vue'
 </template>
 
 <style>
+* {
+  box-sizing: border-box;
+}
+
 body,
 html {
   margin: 0 !important;
@@ -14,7 +18,7 @@ html {
   width: 100%;
   height: 100%;
   overflow: hidden;
-  background-color: #000;
+  background-color: #070a0c;
 }
 
 #app {
